@@ -1,13 +1,28 @@
 package com.edutech.progressive.entity;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "transactions")
 public class Transactions {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
     private int transactionId;
+
+    @Column(name = "account_id", nullable = false)
     private int accountId;
+
+    @Column(nullable = false)
     private double amount;
+
+    @Column(name = "transaction_type", nullable = false)
     private String transactionType;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "transaction_date", nullable = false)
     private Date transactionDate;
 
     public Transactions() {}

@@ -1,12 +1,13 @@
 package com.edutech.progressive.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.edutech.progressive.entity.Transactions;
 
 import java.util.List;
 
+@RestController
 public class TransactionController {
 
     public ResponseEntity<List<Transactions>> getAllTransactions() {

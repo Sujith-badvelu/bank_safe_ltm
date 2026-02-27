@@ -1,13 +1,30 @@
 package com.edutech.progressive.entity;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "customers")
 public class Customers implements Comparable<Customers> {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "customer_id")
     private int customerId;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String email;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
-    private String role; // may be null in MS2
+
+    // Kept nullable till later stages (MS2 Day 12)
+    private String role;
 
     public Customers() {}
 
