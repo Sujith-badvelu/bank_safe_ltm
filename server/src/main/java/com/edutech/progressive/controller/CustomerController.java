@@ -1,10 +1,13 @@
 package com.edutech.progressive.controller;
 
 import com.edutech.progressive.entity.Customers;
-import com.edutech.progressive.entity.Transactions;
-import com.edutech.progressive.service.CustomerService;
+import com.edutech.progressive.exception.CustomerAlreadyExistsException;
+import com.edutech.progressive.service.impl.CustomerServiceImplArraylist;
+import com.edutech.progressive.service.impl.CustomerServiceImplJpa;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -14,69 +17,90 @@ import java.util.List;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    private final CustomerService customerService; // JPA-backed via interface
+    @Autowired
+    private CustomerServiceImplJpa customerServiceJpa;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    @Autowired
+    private CustomerServiceImplArraylist customerServiceArraylist;
 
-    // -------------------- JPA Endpoints --------------------
     @GetMapping
     public ResponseEntity<List<Customers>> getAllCustomers() {
         try {
-            return ResponseEntity.ok(customerService.getAllCustomers());
+            List<Customers> customers = customerServiceJpa.getAllCustomers();
+            return new ResponseEntity<>(customers, HttpStatus.OK);
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{customerId}")
     public ResponseEntity<Customers> getCustomerById(@PathVariable int customerId) {
         try {
-            Customers c = customerService.getCustomerById(customerId);
-            return ResponseEntity.ok(c);
+            Customers customers = customerServiceJpa.getCustomerById(customerId);
+            if (customers != null) {
+                return new ResponseEntity<>(customers, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    /**
-     * Day 6 test expects HTTP 201 (Created) for POST /customers
-     */
-    @PostMapping
-    public ResponseEntity<Integer> addCustomer(@RequestBody Customers customers) {
-        try {
-            int id = customerService.addCustomer(customers);
-            return ResponseEntity.status(HttpStatus.CREATED).body(id);
-        } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+
+@PostMapping
+@PreAuthorize("hasAuthority('ADMIN') or hasRole('ADMIN')") // ✅ covers both JWT ('ADMIN') and WithMockUser('ROLE_ADMIN')
+public ResponseEntity<?> addCustomer(@RequestBody Customers customers) {
+    try {
+        int customerId = customerServiceJpa.addCustomer(customers);
+        return new ResponseEntity<>(customerId, HttpStatus.CREATED);
+    } catch (CustomerAlreadyExistsException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    } catch (SQLException e) {
+        return new ResponseEntity<>("Unable to process your request at the moment",
+                                    HttpStatus.INTERNAL_SERVER_ERROR);
     }
+}
+
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<Void> updateCustomer(@PathVariable int customerId, @RequestBody Customers customers) {
+    public ResponseEntity<?> updateCustomer(@PathVariable int customerId, @RequestBody Customers customers) {
         try {
             customers.setCustomerId(customerId);
-            customerService.updateCustomer(customers);
-            return ResponseEntity.ok().build();
+            customerServiceJpa.updateCustomer(customers);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (CustomerAlreadyExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>("Unable to process your request at the moment", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
-
-    // Placeholder for later days
-    @GetMapping("/{customerId}/transactions")
-    public ResponseEntity<List<Transactions>> getAllTransactionsByCustomerId(@PathVariable int customerId) {
-        return ResponseEntity.ok(null);
     }
 
     @DeleteMapping("/{customerId}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable int customerId) {
         try {
-            customerService.deleteCustomer(customerId);
-            return ResponseEntity.ok().build();
+            customerServiceJpa.deleteCustomer(customerId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/fromArrayList")
+    public ResponseEntity<List<Customers>> getAllCustomersFromArrayList() throws SQLException {
+        List<Customers> customers = customerServiceArraylist.getAllCustomers();
+        return new ResponseEntity<>(customers, HttpStatus.OK);
+    }
+
+    @PostMapping("/toArrayList")
+    public ResponseEntity<Integer> addCustomersToArrayList(@RequestBody Customers customers) throws SQLException {
+        int customersList = customerServiceArraylist.addCustomer(customers);
+        return new ResponseEntity<>(customersList, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/fromArrayList/all")
+    public ResponseEntity<List<Customers>> getAllCustomersSortedByNameFromArrayList() throws SQLException {
+        List<Customers> customersList = customerServiceArraylist.getAllCustomersSortedByName();
+        return new ResponseEntity<>(customersList, HttpStatus.OK);
     }
 }

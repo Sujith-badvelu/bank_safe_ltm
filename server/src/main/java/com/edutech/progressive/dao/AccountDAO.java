@@ -1,6 +1,8 @@
 package com.edutech.progressive.dao;
 
+
 import com.edutech.progressive.entity.Accounts;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,5 +12,4 @@ public interface AccountDAO {
     void updateAccount(Accounts accounts) throws SQLException;
     void deleteAccount(int accountId) throws SQLException;
     List<Accounts> getAllAccounts() throws SQLException;
-    List<Accounts> getAllAccountsByCustomer(int customerId) throws SQLException;
 }

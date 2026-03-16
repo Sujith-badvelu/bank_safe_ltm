@@ -5,12 +5,14 @@ import com.edutech.progressive.entity.Customers;
 import com.edutech.progressive.service.CustomerService;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class CustomerServiceImpl implements CustomerService {
 
-    private final CustomerDAO customerDAO;
+    CustomerDAO customerDAO;
+    private static List<Customers> customersList = new ArrayList<>();
 
     public CustomerServiceImpl(CustomerDAO customerDAO) {
         this.customerDAO = customerDAO;
@@ -22,18 +24,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public Customers getCustomerById(int customerId) throws SQLException {
+        return customerDAO.getCustomerById(customerId);
+    }
+
+    @Override
     public int addCustomer(Customers customers) throws SQLException {
         return customerDAO.addCustomer(customers);
     }
 
-    @Override
-    public List<Customers> getAllCustomersSortedByName() throws SQLException {
-        List<Customers> list = customerDAO.getAllCustomers();
-        Collections.sort(list); // relies on Customers.compareTo (case-insensitive)
-        return list;
-    }
-
-    // Updates an existing customer's details
     @Override
     public void updateCustomer(Customers customers) throws SQLException {
         customerDAO.updateCustomer(customers);
@@ -45,7 +44,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customers getCustomerById(int customerId) throws SQLException {
-        return customerDAO.getCustomerById(customerId);
+    public List<Customers> getAllCustomersSortedByName() throws SQLException {
+        List<Customers> sortedCustomers = customerDAO.getAllCustomers();
+        if (sortedCustomers != null) {
+            Collections.sort(sortedCustomers);
+        }
+        return sortedCustomers;
     }
 }

@@ -1,0 +1,49 @@
+<h2>Transaction Form</h2>
+
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+  <!-- Use camelCase bindings in the template; our setValue shim mirrors values for snake_case too -->
+
+  <div>
+    <label for="accountId">Account ID</label>
+    <input id="accountId" type="text" formControlName="accountId" />
+    <div *ngIf="transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid">
+      <small>Account ID is required.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="transactionType">Transaction Type</label>
+    <select id="transactionType" formControlName="transactionType">
+      <option value="">-- Select --</option>
+      <option value="DEPOSIT">DEPOSIT</option>
+      <option value="WITHDRAWAL">WITHDRAWAL</option>
+    </select>
+    <div *ngIf="transactionForm.get('transactionType')?.touched && transactionForm.get('transactionType')?.invalid">
+      <small>Transaction type is required.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="amount">Amount</label>
+    <input id="amount" type="number" formControlName="amount" />
+    <div *ngIf="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.errors">
+      <small *ngIf="transactionForm.get('amount')?.errors?.['required']">
+        Amount is required.
+      </small>
+      <small *ngIf="transactionForm.get('amount')?.errors?.['min']">
+        Amount cannot be negative.
+      </small>
+    </div>
+  </div>
+
+  <div>
+    <label for="transactionDate">Transaction Date</label>
+    <input id="transactionDate" type="date" formControlName="transactionDate" />
+    <div *ngIf="transactionForm.get('transactionDate')?.touched && transactionForm.get('transactionDate')?.invalid">
+      <small>Transaction date is required.</small>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="transactionForm.invalid">Submit</button>
+</form>
+``

@@ -13,7 +13,7 @@ public class CustomerLoginController {
         return null;
     }
 
-    public ResponseEntity loginUser(LoginRequest loginRequest) {
+    public ResponseEntity<Boolean> loginUser(LoginRequest loginRequest) {
         return null;
     }
 }

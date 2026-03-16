@@ -1,6 +1,7 @@
 package com.edutech.progressive.dao;
 
 import com.edutech.progressive.entity.Transactions;
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -10,5 +11,4 @@ public interface TransactionDAO {
     void updateTransaction(Transactions transaction) throws SQLException;
     void deleteTransaction(int transactionId) throws SQLException;
     List<Transactions> getAllTransactions() throws SQLException;
-    List<Transactions> getTransactionsByCustomerId(int customerId) throws SQLException;
 }

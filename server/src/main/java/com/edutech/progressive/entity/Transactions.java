@@ -1,52 +1,69 @@
 package com.edutech.progressive.entity;
-
 import javax.persistence.*;
 import java.util.Date;
-
 @Entity
-@Table(name = "transactions")
 public class Transactions {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "transaction_id")
     private int transactionId;
-
-    @Column(name = "account_id", nullable = false)
-    private int accountId;
-
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "accountId")
+    private Accounts accounts;
     private double amount;
-
-    @Column(name = "transaction_type", nullable = false)
     private String transactionType;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "transaction_date", nullable = false)
     private Date transactionDate;
 
-    public Transactions() {}
+    public Transactions() {
+        //
+    }
 
-    public Transactions(int transactionId, int accountId, double amount, Date transactionDate, String transactionType) {
+    public Transactions(int transactionId, int accountId, double amount, Date timestamp, String transactionType) {
         this.transactionId = transactionId;
-        this.accountId = accountId;
+        this.accounts.setAccountId(accountId);
         this.amount = amount;
-        this.transactionDate = transactionDate;
+        this.transactionDate = timestamp;
         this.transactionType = transactionType;
     }
 
-    public int getTransactionId() { return transactionId; }
-    public void setTransactionId(int transactionId) { this.transactionId = transactionId; }
+    // Getters and setters
+    public int getTransactionId() {
+        return transactionId;
+    }
 
-    public int getAccountId() { return accountId; }
-    public void setAccountId(int accountId) { this.accountId = accountId; }
+    public void setTransactionId(int transactionId) {
+        this.transactionId = transactionId;
+    }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public double getAmount() {
+        return amount;
+    }
 
-    public String getTransactionType() { return transactionType; }
-    public void setTransactionType(String transactionType) { this.transactionType = transactionType; }
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
 
-    public Date getTransactionDate() { return transactionDate; }
-    public void setTransactionDate(Date transactionDate) { this.transactionDate = transactionDate; }
+    public Accounts getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Accounts accounts) {
+        this.accounts = accounts;
+    }
+
+    public Date getTransactionDate() {
+        return transactionDate;
+    }
+
+    public void setTransactionDate(Date transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+    
+    public String getTransactionType() {
+        return transactionType;
+    }
+
+    public void setTransactionType(String transactionType) {
+        this.transactionType = transactionType;
+    }
 }

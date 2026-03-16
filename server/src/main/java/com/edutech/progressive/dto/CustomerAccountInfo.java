@@ -1,14 +1,11 @@
 package com.edutech.progressive.dto;
 
 public class CustomerAccountInfo {
-
     private int customerId;
     private String customerName;
     private String email;
     private int accountId;
     private double balance;
-
-    public CustomerAccountInfo() {}
 
     public CustomerAccountInfo(int customerId, String customerName, String email, int accountId, double balance) {
         this.customerId = customerId;
@@ -18,20 +15,47 @@ public class CustomerAccountInfo {
         this.balance = balance;
     }
 
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
+    // Getters and setters (or you can make fields public if preferred)
 
-    public String getCustomerName() { return customerName; }
-    public void setCustomerName(String customerName) { this.customerName = customerName; }
+    public int getCustomerId() {
+        return customerId;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
 
-    public int getAccountId() { return accountId; }
-    public void setAccountId(int accountId) { this.accountId = accountId; }
+    public String getCustomerName() {
+        return customerName;
+    }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
 
     @Override
     public String toString() {

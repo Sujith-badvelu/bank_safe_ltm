@@ -3,47 +3,56 @@ package com.edutech.progressive.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "accounts")
 public class Accounts implements Comparable<Accounts> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
     private int accountId;
-
-    @Column(name = "customer_id", nullable = false)
-    private int customerId;
-
-    @Column(nullable = false)
-    private double balance;
-
-   
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "customerId") // name refers to the column name in the Accounts table
     private Customers customer;
 
-    public Accounts() {}
+    private double balance;
+
+    public Accounts() {
+        // constrcutor
+    }
+
 
     public Accounts(int accountId, int customerId, double balance) {
         this.accountId = accountId;
-        this.customerId = customerId;
+        this.customer.setCustomerId(customerId);
+        this.balance=balance;
+    }
+
+    // Getters and setters
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public Customers getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customers customer) {
+        this.customer = customer;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
-    public int getAccountId() { return accountId; }
-    public void setAccountId(int accountId) { this.accountId = accountId; }
-
-    public int getCustomerId() { return customerId; }
-    public void setCustomerId(int customerId) { this.customerId = customerId; }
-
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
-
-    public Customers getCustomer() { return customer; }
-    public void setCustomer(Customers customer) { this.customer = customer; }
-
     @Override
-    public int compareTo(Accounts o) {
-        return Double.compare(this.balance, o.getBalance());
+    public int compareTo(Accounts otherAccounts) {
+        // Implement comparison logic based on account balance
+        return Double.compare(this.getBalance(), otherAccounts.getBalance());
     }
 }

@@ -1,10 +1,9 @@
 package com.edutech.progressive.service;
 
+import com.edutech.progressive.entity.Transactions;
 
 import java.sql.SQLException;
 import java.util.List;
-
-import com.edutech.progressive.entity.Transactions;
 
 public interface TransactionService {
     List<Transactions> getAllTransactions() throws SQLException;

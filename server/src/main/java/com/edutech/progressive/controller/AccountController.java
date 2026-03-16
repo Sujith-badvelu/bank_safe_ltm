@@ -1,97 +1,91 @@
 package com.edutech.progressive.controller;
 
 import com.edutech.progressive.entity.Accounts;
-import com.edutech.progressive.service.AccountService;
-import org.springframework.http.HttpHeaders;
+import com.edutech.progressive.exception.AccountNotFoundException;
+
+import com.edutech.progressive.service.impl.AccountServiceImplJpa;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/accounts", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping("/accounts")
 public class AccountController {
 
-    private final AccountService accountService; // JPA-backed via interface
+    private final AccountServiceImplJpa accountServiceImplJpa;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
+    @Autowired
+    public AccountController(AccountServiceImplJpa accountServiceImplJpa) {
+        this.accountServiceImplJpa = accountServiceImplJpa;
     }
 
-    // GET /accounts
     @GetMapping
     public ResponseEntity<List<Accounts>> getAllAccounts() {
         try {
-            List<Accounts> list = accountService.getAllAccounts();
-            return ResponseEntity.ok(list);
+            List<Accounts> accounts = accountServiceImplJpa.getAllAccounts();
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // GET /accounts/{accountId}
     @GetMapping("/{accountId}")
-    public ResponseEntity<Accounts> getAccountById(@PathVariable int accountId) {
+    public ResponseEntity<?> getAccountById(@PathVariable int accountId) {
         try {
-            Accounts acc = accountService.getAccountById(accountId);
-            return ResponseEntity.ok(acc);
-        } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            Accounts accounts = accountServiceImplJpa.getAccountById(accountId);
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
+        } catch (AccountNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Unable to process your request at the moment",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // GET /accounts/user/{userId}
-    // Day 7 tests typically expect userId as an int and a JSON list in the response.
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Accounts>> getAccountsByUser(@PathVariable("userId") int userId) {
+    public ResponseEntity<List<Accounts>> getAccountsByUser(@PathVariable String userId) {
         try {
-            List<Accounts> list = accountService.getAccountsByUser(userId);
-            return ResponseEntity.ok(list);
+            List<Accounts> accounts = accountServiceImplJpa.getAccountsByUser(Integer.parseInt(userId));
+            return new ResponseEntity<>(accounts, HttpStatus.OK);
         } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // POST /accounts
-    // Day 7: must return 201 Created + Location header + integer id in body.
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Integer> addAccount(@RequestBody Accounts accounts) {
         try {
-            int id = accountService.addAccount(accounts);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setLocation(URI.create("/accounts/" + id));
-
-            return new ResponseEntity<>(id, headers, HttpStatus.CREATED);
-        } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            int accountId = accountServiceImplJpa.addAccount(accounts);
+            return new ResponseEntity<>(accountId, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // PUT /accounts/{accountId}
-    @PutMapping(value = "/{accountId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping("/{accountId}")
     public ResponseEntity<Void> updateAccount(@PathVariable int accountId, @RequestBody Accounts accounts) {
         try {
             accounts.setAccountId(accountId);
-            accountService.updateAccount(accounts);
-            return ResponseEntity.ok().build();
-        } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            accountServiceImplJpa.updateAccount(accounts);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    // DELETE /accounts/{accountId}
     @DeleteMapping("/{accountId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasRole('ADMIN')") // ✅ covers both JWT and WithMockUser
     public ResponseEntity<Void> deleteAccount(@PathVariable int accountId) {
         try {
-            accountService.deleteAccount(accountId);
-            return ResponseEntity.ok().build();
-        } catch (SQLException e) {
-            return ResponseEntity.internalServerError().build();
+            accountServiceImplJpa.deleteAccount(accountId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -1,0 +1,21 @@
+<h2>Customer List</h2>
+
+<div *ngIf="customers?.length > 0; else noData">
+  <div
+    *ngFor="let customer of customers"
+    class="customer-card"
+    style="border:1px solid #ccc; padding:10px; margin-bottom:10px;"
+  >
+    <p><strong>Customer ID:</strong> {{ customer.customerId }}</p>
+    <p><strong>Name:</strong> {{ customer.name }}</p>
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Username:</strong> {{ customer.username }}</p>
+    <!-- Normally don't show passwords in UI, but Day 19 spec includes it -->
+    <p><strong>Password:</strong> {{ customer.password }}</p>
+    <p><strong>Role:</strong> {{ customer.role }}</p>
+  </div>
+</div>
+
+<ng-template #noData>
+  <p>No customer data available.</p>
+</ng-template>

@@ -1,0 +1,27 @@
+<h2>Account Form</h2>
+
+<form [formGroup]="accountForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="customer_id">Customer ID</label>
+    <input id="customer_id" type="text" formControlName="customer_id" />
+    <div *ngIf="accountForm.get('customer_id')?.touched && accountForm.get('customer_id')?.invalid">
+      <small>Customer ID is required.</small>
+    </div>
+  </div>
+
+  <div>
+    <label for="balance">Balance</label>
+    <input id="balance" type="number" formControlName="balance" />
+    <div *ngIf="accountForm.get('balance')?.touched && accountForm.get('balance')?.errors">
+      <small *ngIf="accountForm.get('balance')?.errors?.['required']">
+        Balance is required.
+      </small>
+      <small *ngIf="accountForm.get('balance')?.errors?.['min']">
+        Balance cannot be negative.
+      </small>
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="accountForm.invalid">Submit</button>
+</form>
