@@ -1,31 +1,56 @@
 import { Component, OnInit } from '@angular/core';
+import { Account } from '../../types/Account';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AccountTS } from '../../types/tstypes/Accountts';
+import { BankService } from '../../services/bank.service';
+import { Customer } from '../../types/Customer';
 
 @Component({
-  selector: 'app-account',
-  templateUrl: './account.component.html'
+  selector: 'app-accounts',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.scss']
 })
 export class AccountComponent implements OnInit {
-
   accountForm!: FormGroup;
-  account?: AccountTS;
+  account: Account | undefined;
+  customers: Customer[] = [];
+  errorMessage: string = '';
+  successMessage: string = '';
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private banksService: BankService
+  ) { }
 
   ngOnInit(): void {
-    this.accountForm = this.fb.group({
-      customer_id: ['', [Validators.required]],
-      balance: [null, [Validators.required, Validators.min(0)]]
+    this.loadCustomers();
+    this.accountForm = this.formBuilder.group({
+      customer: [null, [Validators.required]],
+      balance: ["", [Validators.required, Validators.min(0)]],
     });
   }
 
+  loadCustomers(): void {
+    this.banksService.getAllCustomers().subscribe({
+      next: (response) => {
+        this.customers = response;
+      },
+      error: (error) => console.log('Error in loading customers')
+    })
+  }
+
   onSubmit(): void {
-    if (this.accountForm.invalid) {
-      this.account = undefined;
-      return;
+    if (this.accountForm.valid) {
+      this.banksService.addAccount(this.accountForm.value).subscribe({
+        next: (response) => {
+          this.successMessage = 'Account created successfully';
+          this.errorMessage = '';
+          this.accountForm.reset();
+        },
+        error: (error) => this.errorMessage = error.error
+      });
+    } else {
+      this.errorMessage = 'Please fill out all required fields correctly.';
+      this.successMessage = '';
     }
-    const { customer_id, balance } = this.accountForm.value;
-    this.account = new AccountTS(String(customer_id), Number(balance));
   }
 }

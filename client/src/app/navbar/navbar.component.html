@@ -1,0 +1,13 @@
+<nav class="navbar">
+    <ul class="navbar-list">
+        <li><a routerLink="/bank" class="nav-link app-name">Dashboard</a></li>
+
+        <li *ngIf="role !== 'USER'"><a routerLink="/bank/customer" class="nav-link">Add New
+                Customer</a></li>
+        <li *ngIf="role !== 'USER'"> <a routerLink="/bank/account" class="nav-link">Add New
+                Account</a></li>
+        <li *ngIf="role === 'USER'"> <a routerLink="/bank/transaction" class="nav-link">Perform a Transaction</a></li>
+
+    </ul>
+    <app-logout></app-logout>
+</nav>

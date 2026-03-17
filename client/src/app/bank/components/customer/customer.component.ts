@@ -1,45 +1,63 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CustomerTS } from '../../types/tstypes/Customerts';
+import { BankService } from '../../services/bank.service';
+import { Customer } from '../../types/Customer';
 
 @Component({
   selector: 'app-customers',
   templateUrl: './customer.component.html',
-  styleUrls: ['./customer.component.scss']
+  styleUrls: ['./customer.component.scss'],
 })
-export class CustomersComponent {
-
-  isFormSubmitted: boolean | undefined;
-  customerSuccess$: any;
-  customerError$: any;
+export class CustomersComponent implements OnInit {
+  isFormSubmitted = false;
+  customerSuccess: string = '';
+  customerError: string = '';
   customerForm!: FormGroup;
-  customer: CustomerTS;
+  customer: Customer | null = null;
 
-  constructor(private formBuilder: FormBuilder) {
-    this.customer = new CustomerTS("", "", "", "", "", "");
-  }
+  constructor(
+    private formBuilder: FormBuilder,
+    private banksService: BankService
+  ) { }
 
   ngOnInit(): void {
     this.customerForm = this.formBuilder.group({
-      name: ['', Validators.required],
-      email: ['', Validators.required],
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, this.noSpecialCharacters]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(8),
+        ],
+      ],
+      role: ['', Validators.required]
     });
   }
 
+  private noSpecialCharacters(control: any): { [key: string]: boolean } | null {
+    const SPECIAL_CHARACTERS_REGEX = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/;
+    if (SPECIAL_CHARACTERS_REGEX.test(control.value)) {
+      return { specialCharacters: true };
+    }
+    return null;
+  }
+
   onSubmit(): void {
-    this.isFormSubmitted = true;
-
-    const value = this.customerForm.value;
-
-    this.customer = new CustomerTS(
-      value.name,
-      value.email,
-      value.username,
-      value.password,
-      "",
-      ""
-    );
+    if (this.customerForm.valid) {
+      this.banksService.addCustomer(this.customerForm.value).subscribe({
+        next: (response) => {
+          this.customer = response;
+          this.customerSuccess = 'Customer created successfully';
+          this.customerError = '';
+          this.customerForm.reset();
+        },
+        error: (error) => this.customerError = error.error
+      });
+    } else {
+      this.customerError = 'Please fill out all required fields correctly.';
+      this.customerSuccess = '';
+    }
   }
 }

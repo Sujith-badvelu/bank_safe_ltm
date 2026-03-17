@@ -1,49 +1,44 @@
-<h2>Transaction Form</h2>
-
-<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
-  <!-- Use camelCase bindings in the template; our setValue shim mirrors values for snake_case too -->
-
-  <div>
-    <label for="accountId">Account ID</label>
-    <input id="accountId" type="text" formControlName="accountId" />
-    <div *ngIf="transactionForm.get('accountId')?.touched && transactionForm.get('accountId')?.invalid">
-      <small>Account ID is required.</small>
-    </div>
-  </div>
-
-  <div>
-    <label for="transactionType">Transaction Type</label>
-    <select id="transactionType" formControlName="transactionType">
-      <option value="">-- Select --</option>
-      <option value="DEPOSIT">DEPOSIT</option>
-      <option value="WITHDRAWAL">WITHDRAWAL</option>
+<h2 style="text-align: center">Perform a Transaction</h2>
+<form (ngSubmit)="onSubmit()" [formGroup]="transactionForm" class="transaction-form">
+  <div class="form-group">
+    <label for="userId">Account:</label>
+    <select formControlName="accounts">
+      <option value="">Select Account</option>
+      <option *ngFor="let account of accounts" [ngValue]="account">
+        {{ account.accountId }}
+      </option>
     </select>
-    <div *ngIf="transactionForm.get('transactionType')?.touched && transactionForm.get('transactionType')?.invalid">
-      <small>Transaction type is required.</small>
+    <div *ngIf="transactionForm.get('account')?.invalid && (transactionForm.get('account')?.touched )" class="error">
+      <small *ngIf="transactionForm.get('account')?.hasError('required')">Account is required.</small>
     </div>
   </div>
 
-  <div>
-    <label for="amount">Amount</label>
-    <input id="amount" type="number" formControlName="amount" />
-    <div *ngIf="transactionForm.get('amount')?.touched && transactionForm.get('amount')?.errors">
-      <small *ngIf="transactionForm.get('amount')?.errors?.['required']">
-        Amount is required.
-      </small>
-      <small *ngIf="transactionForm.get('amount')?.errors?.['min']">
-        Amount cannot be negative.
-      </small>
+  <div class="form-group">
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" formControlName="amount" />
+    <div *ngIf="transactionForm.get('amount')?.invalid && (transactionForm.get('amount')?.touched )" class="error">
+      <small *ngIf="transactionForm.get('amount')?.hasError('required')">Amount is required.</small>
     </div>
   </div>
 
-  <div>
-    <label for="transactionDate">Transaction Date</label>
-    <input id="transactionDate" type="date" formControlName="transactionDate" />
-    <div *ngIf="transactionForm.get('transactionDate')?.touched && transactionForm.get('transactionDate')?.invalid">
-      <small>Transaction date is required.</small>
+  <div class="form-group">
+    <label for="transactionType">Transaction Type:</label>
+    <input type="radio" id="transactionType" formControlName="transactionType" value="credit" /> Credit
+    <input type="radio" id="transactionType" formControlName="transactionType" value="debit" /> Debit
+    <div *ngIf="transactionForm.get('transactionType')?.invalid && (transactionForm.get('transactionType')?.touched )" class="error">
+      <small *ngIf="transactionForm.get('transactionType')?.hasError('required')">Transaction Type is required.</small>
     </div>
   </div>
 
-  <button type="submit" [disabled]="transactionForm.invalid">Submit</button>
+  <button type="submit" class="btn-submit" [disabled]="transactionForm.invalid">Create Transaction</button>
+  <a routerLink="/bank" class="task-list" class="task-list">Dashboard</a>
+
+  <ng-container>
+    <div *ngIf="transactionError" class="error">
+      {{ transactionError }}
+    </div>
+    <div *ngIf="transactionSuccess" class="success">
+      {{ transactionSuccess }}
+    </div>
+  </ng-container>
 </form>
-``

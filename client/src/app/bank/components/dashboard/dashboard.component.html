@@ -1,0 +1,151 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-container">
+    <ng-container *ngIf="role === 'ADMIN'">
+        <h2>Welcome ADMIN</h2>
+        <section class="card">
+            <h3>Customers List</h3>
+            <div *ngIf="customers.length === 0" class="empty-list">
+                No customers available.
+            </div>
+            <table *ngIf="customers.length !== 0" class="table">
+                <thead>
+                    <tr>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let customer of customers">
+                        <td>{{ customer.customerId}}</td>
+                        <td>{{ customer.name }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.role }}</td>
+                        <td class="actions">
+                            <button class="btn btn-edit" (click)="editCustomer(customer)">Edit</button>
+                            <button class="btn btn-delete" (click)="deteteCustomer(customer)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h3>Accounts List</h3>
+            <div *ngIf="accounts.length === 0" class="empty-list">
+                No accounts available.
+            </div>
+            <table *ngIf="accounts.length !== 0" class="table">
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Balance</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let account of accounts">
+                        <td>{{ account.accountId}}</td>
+                        <td>{{ account.customer.customerId }}</td>
+                        <td>{{ account.customer.name }}</td>
+                        <td>{{ account.balance }}</td>
+                        <td class="actions">
+                            <button class="btn btn-edit" (click)="editAccount(account)">Edit</button>
+                            <button class="btn btn-delete" (click)="deteteAccount(account)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h3>Transactions List</h3>
+            <div *ngIf="transactions.length === 0" class="empty-list">
+                No accounts available.
+            </div>
+            <table *ngIf="transactions.length !== 0" class="table">
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>transactionType</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let transaction of transactions">
+                        <td>{{ transaction.accounts?.accountId }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.transactionDate | date:'longDate'}}</td>
+                        <td>{{ transaction.transactionType }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </ng-container>
+    <ng-container *ngIf="role !== 'ADMIN'">
+        <section class="card">
+            <h3>Customers Details</h3>
+            <div *ngIf="loggedInCustomer">
+                <p><strong>Name:</strong> {{ loggedInCustomer.name }}</p>
+                <p><strong>Email:</strong> {{ loggedInCustomer.email }}</p>
+                <p><strong>Username:</strong> {{ loggedInCustomer.username }}</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Accounts List</h3>
+            <div *ngIf="accounts.length === 0" class="empty-list">
+                No accounts available.
+            </div>
+            <table *ngIf="accounts.length !== 0" class="table">
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Customer ID</th>
+                        <th>Customer Name</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let account of accounts">
+                        <td>{{ account.accountId}}</td>
+                        <td>{{ account.customer.customerId }}</td>
+                        <td>{{ account.customer.name }}</td>
+                        <td>{{ account.balance }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="card">
+            <h3>Transactions List</h3>
+            <div *ngIf="transactions.length === 0" class="empty-list">
+                No accounts available.
+            </div>
+            <table *ngIf="transactions.length !== 0" class="table">
+                <thead>
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>transactionType</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let transaction of transactions">
+                        <td>{{ transaction.accounts?.accountId }}</td>
+                        <td>{{ transaction.amount }}</td>
+                        <td>{{ transaction.transactionDate | date:'longDate'}}</td>
+                        <td>{{ transaction.transactionType }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </ng-container>
+</div>
