@@ -70,4 +70,3 @@ public class AccountServiceImplJpa implements AccountService {
         return sortedAccounts;
     }
 }
-

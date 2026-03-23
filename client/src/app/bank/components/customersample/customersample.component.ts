@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Customer } from '../../types/Customer';
-import { of } from 'rxjs';
+// import { Account } from '../bank/types/Account';
 import { CustomerTS } from '../../types/tstypes/Customerts';
 
 @Component({
@@ -12,10 +10,7 @@ import { CustomerTS } from '../../types/tstypes/Customerts';
   styleUrls: ['./customersample.component.css']
 })
 export class CustomersampleComponent {
-  customer: CustomerTS;
-  constructor() {
-    this.customer = new CustomerTS("Srinivas Sobhit Kintali", "srinivassobhit@gmail.com", "sobhit03", "1234567890", "USER", "101");
-  }
-
+  // account:Cu = new Account("1",400,"1");
+  // name: string, email: string, username: string, password: string, role: string, customerId?:string)
+   customer:CustomerTS = new CustomerTS("jhon","jhon@gmail.com","jhonuser","User","1");
 }
-

@@ -9,8 +9,6 @@ import { AccountTS } from '../../types/tstypes/Accountts';
   styleUrls: ['./accountsample.component.css']
 })
 export class AccountsampleComponent {
-  account: AccountTS;
-  constructor() {
-    this.account = new AccountTS("101", 30000, "1")
-  }
+   account:AccountTS=new AccountTS("1",500.00,"1");
 }
+

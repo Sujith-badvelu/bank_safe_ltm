@@ -12,7 +12,7 @@ import { AuthService } from "../../services/auth.service";
 })
 export class LoginComponent implements OnInit {
     loginForm!: FormGroup;
-    loginError$!: Observable<{ [key: string]: string; }>;
+    loginError$!: Observable<{ [key: string]: string }>;
 
     constructor(
         private formBuilder: FormBuilder,
@@ -41,9 +41,10 @@ export class LoginComponent implements OnInit {
                 .pipe(
                     tap((response) => {
                         console.log(response);
-                        localStorage.setItem("token", response["token"]);
-                        localStorage.setItem("role", response["roles"]);
-                        localStorage.setItem("user_id", response["userId"]);
+                      localStorage.setItem("token", response['token']);
+                        localStorage.setItem("role", response['roles']);
+                        localStorage.setItem("user_id", response['userId']);
+
                         console.log(localStorage.getItem("role"));
                         this.router.navigate(["/bank"]);
                     }),

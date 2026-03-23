@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.edutech.progressive.entity.Accounts;
-import com.edutech.progressive.exception.AccountNotFoundException;
 
 public interface AccountService {
 
@@ -22,7 +21,7 @@ public interface AccountService {
     default List<Accounts> getAccountsByUser(int userId) throws SQLException {
         return List.of();
     }
-    default Accounts getAccountById(int accountId) throws AccountNotFoundException, SQLException{
+    default Accounts getAccountById(int accountId) throws SQLException {
         return null;
     }
     default void updateAccount(Accounts accounts) throws SQLException {}

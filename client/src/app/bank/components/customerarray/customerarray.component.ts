@@ -1,36 +1,16 @@
 import { Component } from '@angular/core';
-import { CustomerTS } from '../../types/tstypes/Customerts'; // <-- correct relative path
+// import { Customer } from '../bank/types/Customer';
+import { CustomerTS } from '../../types/tstypes/Customerts';
 
 @Component({
   selector: 'app-customerarray',
-  templateUrl: './customerarray.component.html'
-  // NOTE: Temporarily remove styleUrls to avoid missing-file compile errors in tests.
-  // If you have './customerarray.component.scss' or '.css', you can add it back.
+
+  templateUrl: './customerarray.component.html',
+  styleUrls: ['./customerarray.component.css']
 })
 export class CustomerarrayComponent {
-
-  customers: CustomerTS[] = [];
-
-  constructor() {
-    // Two sample customers as per Day 19 requirement
-    const customer1 = new CustomerTS(
-      'Srujan',
-      'srujan@gmail.com',
-      'srujan123',
-      'Password123',
-      'USER',
-      '1'
-    );
-
-    const customer2 = new CustomerTS(
-      'Iswarya',
-      'iswarya@gmail.com',
-      'iswarya01',
-      'Password456',
-      'ADMIN',
-      '2'
-    );
-
-    this.customers = [customer1, customer2];
-  }
+  customers: CustomerTS[] = [
+    new CustomerTS("John Doe", "john@example.com", "john_doe", "password123", "User", "1"),
+    new CustomerTS("John Doe1", "john1@example.com", "john_doe", "password123", "Admin", "2")
+   ]
 }

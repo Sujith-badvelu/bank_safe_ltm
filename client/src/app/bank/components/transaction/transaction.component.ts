@@ -13,14 +13,15 @@ import { TransactionTS } from '../../types/tstypes/Transactionts';
   styleUrls: ['./transaction.component.scss']
 })
 export class TransactionComponent implements OnInit {
-  transactionForm!: FormGroup;
-  accounts!: Account[];
-  date!:Date;
-  role!: string|null;
-  userId!: string|null;
-  transactionError!: string;
-  transactionSuccess!: string;
-  users!: Customer[];
+ transactionForm!: FormGroup;
+accounts!: Account[];
+date!: Date;
+role!: string | null;
+userId!: string | null;
+transactionError!: string;
+transactionSuccess!: string;
+users!: Customer[];
+
   isFormSubmitted: boolean = false;
 
   constructor(

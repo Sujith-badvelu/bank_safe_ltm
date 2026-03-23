@@ -1,5 +1,6 @@
 package com.edutech.progressive.controller;
 
+
 import com.edutech.progressive.entity.Accounts;
 import com.edutech.progressive.exception.AccountNotFoundException;
 
@@ -7,11 +8,11 @@ import com.edutech.progressive.service.impl.AccountServiceImplJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/accounts")
@@ -42,11 +43,9 @@ public class AccountController {
         } catch (AccountNotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            return new ResponseEntity<>("Unable to process your request at the moment",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Unable to process your request at the moment", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Accounts>> getAccountsByUser(@PathVariable String userId) {
         try {
@@ -79,7 +78,6 @@ public class AccountController {
     }
 
     @DeleteMapping("/{accountId}")
-    @PreAuthorize("hasAuthority('ADMIN') or hasRole('ADMIN')") // ✅ covers both JWT and WithMockUser
     public ResponseEntity<Void> deleteAccount(@PathVariable int accountId) {
         try {
             accountServiceImplJpa.deleteAccount(accountId);
